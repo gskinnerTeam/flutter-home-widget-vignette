@@ -1,6 +1,5 @@
-name: flutter_ios_widget
-description: A new Flutter project.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+name: flutter_home_widget_vignette
+description: Demonstrates a basic implementation of an iOS "Home Widget" in Flutter.
 
 version: 1.0.0+1
 
@@ -23,3 +22,5 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+  assets:
+    - assets/

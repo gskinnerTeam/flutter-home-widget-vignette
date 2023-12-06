@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_home_widget_vignette/home_widget_controller.dart';
 import 'package:home_widget/home_widget.dart';
 
 void main() {
@@ -33,20 +34,21 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  
+  final _homeWidget = CounterHomeWidgetController();
+
   @override
   void initState() {
-    HomeWidget.setAppGroupId('group.com.gskinner.homewidget');
+    _homeWidget.init();
     super.initState();
   }
 
   void _incrementCounter() {
     setState(() {
       _counter++;
-      HomeWidget.saveWidgetData<int>('counter', _counter);
-      HomeWidget.updateWidget(iOSName: 'CounterWidget');
     });
+    _homeWidget.update(_counter);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -72,4 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
 }
+
