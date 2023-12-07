@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.gskinner.homewidget</string>
+		<string>group.com.gskinner.counterwidget</string>
 	</array>
 </dict>
 </plist>
