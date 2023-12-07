@@ -13,26 +13,46 @@ import Intents
 let widgetKind = "CounterWidget";
 
 // UserDefaults keys, matches values declared in Flutter
-let userDefaultsGroupId = "group.com.gskinner.counterwidget";
-let userDefaultsCounterId = "counter";
+let groupId = "group.com.gskinner.counterwidget";
+let counterId = "counter";
+let bgRenderKey = "bgRender";
 
 struct Provider: TimelineProvider {
     // Provide an entry for a placeholder version of the widget
     func placeholder(in context: Context) -> CounterEntry {
-        CounterEntry(date: Date(), count: 0)
+        CounterEntry(count: 0, date: Date(), displaySize: context.displaySize)
     }
     
     // Provide an entry for the current time and state of the widget
     func getSnapshot(in context: Context, completion: @escaping (CounterEntry) -> ()) {
-        let entry:CounterEntry
-        if(context.isPreview){
-            entry = CounterEntry(date: Date(), count: 0)
-        } else {
-            let userDefaults = UserDefaults(suiteName: userDefaultsGroupId)
-            let count = userDefaults?.integer(forKey: userDefaultsCounterId) ?? 0;
-            entry = CounterEntry(date: Date(), count: count)
+        let userDefaults = UserDefaults(suiteName: groupId)
+        let count = userDefaults?.integer(forKey: counterId) ?? 2;
+        
+        func getEntry(_ count:Int,_  context: Context,_ imgPath:String?) -> CounterEntry{
+            return CounterEntry(
+                count: count,
+                date: Date(),
+                displaySize: context.displaySize,
+                bgImgPath: imgPath)
         }
-        completion(entry);
+        var entry:CounterEntry?
+//        if(context.family == .systemSmall){
+//            let bgImgPath = userDefaults?.string(forKey: "\(bgRenderKey)_sm")
+//            entry = getEntry(count, context, bgImgPath)
+//        } 
+//        else if(context.family == .systemMedium){
+//            let bgImgPath = userDefaults?.string(forKey: "\(bgRenderKey)_md")
+//            entry = getEntry(count, context, bgImgPath)
+//        }
+//        else if(context.family == .systemLarge){
+//            let bgImgPath = userDefaults?.string(forKey: "\(bgRenderKey)_lg")
+//            entry = getEntry(count, context, bgImgPath)
+//        } else {
+            let bgImgPath = userDefaults?.string(forKey: bgRenderKey)
+            entry = getEntry(count, context, bgImgPath)
+//        }
+        
+        completion(entry!);
     }
     
     // Provide an array of entries for the current time and, optionally, any future times
@@ -46,9 +66,11 @@ struct Provider: TimelineProvider {
 
 /// Entry, is passed into the view and defines the data it needs
 struct CounterEntry : TimelineEntry {
+    let count: Int
     let date: Date
-    let count:Int;
-//    let displaySize: CGSize
+    let displaySize: CGSize
+    var bgImgPath: String? = nil
+
 //    let imageData: Data?
 }
 
@@ -58,8 +80,10 @@ struct CounterWidget: Widget {
         StaticConfiguration(kind: widgetKind, provider: Provider()) { entry in
             CounterWidgetView(entry: entry)
         }
+        .contentMarginsDisabled()
         .configurationDisplayName("Counter Widget")
         .description("Displays the current count of the counter app.")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
@@ -69,19 +93,57 @@ struct CounterWidgetView : View {
     var entry: Provider.Entry
     
     var body: some View {
-        ZStack{
-            LinearGradient(
-                gradient: Gradient(colors: [.black.opacity(0), .black]),
-                startPoint: .center,
-                endPoint: .bottom)
-            VStack{
-                Text("\(entry.count)");
-            }.padding()
+        let imgPath = entry.bgImgPath ?? flutterAssetBundle.appending(path: "/assets/images/widget-background-empty.png").path();
+        
+            if let uiImage = UIImage(contentsOfFile: imgPath) {
+                let img = Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+                    .edgesIgnoringSafeArea(.all)
+                    //.frame(width: entry.displaySize.width, height: 400)
+                return AnyView(
+                    ZStack{
+                        Color.gray
+                        img
+//                        LinearGradient(
+//                            gradient: Gradient(colors: [.black.opacity(0), .black]),
+//                            startPoint: .center,
+//                            endPoint: .bottom)
+                        VStack{
+                            Text("\(entry.count)").font(.system(size: 72));
+                        }.padding()
+                    }
+                )
+                
+            }
+        return AnyView(EmptyView())
+        
+    }
+}
+
+// Disable system margins with new iOS17 APIs if available
+extension View {
+    func widgetBackground(_ backgroundView: some View) -> some View {
+        if #available(iOSApplicationExtension 17.0, iOS 17.0, macOSApplicationExtension 14.0, *) {
+            return containerBackground(for: .widget) {
+                backgroundView
+            }
+        } else {
+            return background(backgroundView)
         }
     }
 }
 
-
+var flutterAssetBundle: URL {
+    let bundle = Bundle.main
+    if bundle.bundleURL.pathExtension == "appex" {
+        // Peel off two directory levels - MY_APP.app/PlugIns/MY_APP_EXTENSION.appex
+        var url = bundle.bundleURL.deletingLastPathComponent().deletingLastPathComponent()
+        url.append(component: "Frameworks/App.framework/flutter_assets")
+        return url
+    }
+    return bundle.bundleURL
+}
 
 //// Load an image from the flutter assets bundle
 //struct LogoImage : View {

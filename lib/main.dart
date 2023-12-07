@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_home_widget_vignette/home_widget_bg_image.dart';
 import 'package:flutter_home_widget_vignette/home_widget_controller.dart';
-import 'package:home_widget/home_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,39 +34,67 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  final _homeWidget = CounterHomeWidgetController();
+  static const _defaultCounterValue = 3;
+  static const _countPrefsKey = 'count';
+
+  // Start the counter at a >1 value for nicer bg visualizations
+  int _counter = _defaultCounterValue;
+
+  final _homeWidgetController = CounterHomeWidgetController();
+
+  // Use prefs to persist the current count between app launches
+  SharedPreferences? _prefs;
 
   @override
   void initState() {
-    _homeWidget.init();
+    _initPrefs();
+    _homeWidgetController.init();
     super.initState();
+  }
+
+  // Get UserPrefs instance and load initial value for _counter
+  void _initPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _counter = _prefs?.getInt(_countPrefsKey) ?? _counter;
+    });
   }
 
   void _incrementCounter() {
     setState(() {
       _counter++;
+      if (_counter > 9) _counter = _defaultCounterValue;
     });
-    _homeWidget.update(_counter);
+    // Save current count to userPrefs
+    _prefs?.setInt(_countPrefsKey, _counter);
+    // Update home widget
+    _homeWidgetController.setCount(count: _counter);
   }
-
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = Theme.of(context).primaryColor;
+    _homeWidgetController.setBgColor(bgColor);
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: Stack(
+        children: [
+          HomeWidgetBgImage(count: _counter),
+          // Counter widget
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  'You have pushed the button this many times:',
+                ),
+                Text(
+                  '$_counter',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
@@ -74,6 +103,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-
 }
-
