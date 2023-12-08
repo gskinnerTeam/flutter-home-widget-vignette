@@ -13,7 +13,6 @@
 		29A1B7D22AAF78AA00BFF3E0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29752CDB2A8BDD6000472966 /* WidgetKit.framework */; };
 		29A1B7D32AAF78AA00BFF3E0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29752CDD2A8BDD6000472966 /* SwiftUI.framework */; };
 		29A1B7D62AAF78AA00BFF3E0 /* CounterWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1B7D52AAF78AA00BFF3E0 /* CounterWidgetBundle.swift */; };
-		29A1B7D82AAF78AA00BFF3E0 /* CounterWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1B7D72AAF78AA00BFF3E0 /* CounterWidgetLiveActivity.swift */; };
 		29A1B7DA2AAF78AA00BFF3E0 /* CounterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A1B7D92AAF78AA00BFF3E0 /* CounterWidget.swift */; };
 		29A1B7DD2AAF78AB00BFF3E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29A1B7DC2AAF78AB00BFF3E0 /* Assets.xcassets */; };
 		29A1B7DF2AAF78AB00BFF3E0 /* CounterWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 29A1B7DB2AAF78AA00BFF3E0 /* CounterWidget.intentdefinition */; };
@@ -79,7 +78,6 @@
 		297FD56D2ADF1244008D8BFE /* FlutterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterUtils.swift; sourceTree = "<group>"; };
 		29A1B7D12AAF78AA00BFF3E0 /* CounterWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CounterWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		29A1B7D52AAF78AA00BFF3E0 /* CounterWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetBundle.swift; sourceTree = "<group>"; };
-		29A1B7D72AAF78AA00BFF3E0 /* CounterWidgetLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetLiveActivity.swift; sourceTree = "<group>"; };
 		29A1B7D92AAF78AA00BFF3E0 /* CounterWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidget.swift; sourceTree = "<group>"; };
 		29A1B7DB2AAF78AA00BFF3E0 /* CounterWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = CounterWidget.intentdefinition; sourceTree = "<group>"; };
 		29A1B7DC2AAF78AB00BFF3E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -165,7 +163,6 @@
 			isa = PBXGroup;
 			children = (
 				29A1B7D52AAF78AA00BFF3E0 /* CounterWidgetBundle.swift */,
-				29A1B7D72AAF78AA00BFF3E0 /* CounterWidgetLiveActivity.swift */,
 				29A1B7D92AAF78AA00BFF3E0 /* CounterWidget.swift */,
 				29A1B7DB2AAF78AA00BFF3E0 /* CounterWidget.intentdefinition */,
 				29A1B7DC2AAF78AB00BFF3E0 /* Assets.xcassets */,
@@ -473,7 +470,6 @@
 				297FD56F2ADF1244008D8BFE /* FlutterUtils.swift in Sources */,
 				29A1B7D62AAF78AA00BFF3E0 /* CounterWidgetBundle.swift in Sources */,
 				29A1B7DA2AAF78AA00BFF3E0 /* CounterWidget.swift in Sources */,
-				29A1B7D82AAF78AA00BFF3E0 /* CounterWidgetLiveActivity.swift in Sources */,
 				29A1B7DF2AAF78AB00BFF3E0 /* CounterWidget.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

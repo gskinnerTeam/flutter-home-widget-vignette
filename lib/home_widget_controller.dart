@@ -1,30 +1,35 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_home_widget_vignette/home_widget_bg_image.dart';
 import 'package:home_widget/home_widget.dart';
 
 class CounterHomeWidgetController {
-  // Matches the `kind` specified when creating the `WidgetConfiguration` in the swift code
+  // Must match the `kind` specified when creating the `WidgetConfiguration` in swiftUi
   final String widgetKind = 'CounterWidget';
 
-  // UserDefaults keys, matches values declared in swiftUi
+  // UserDefaults keys, must match values declared in swiftUi
   final String groupId = 'group.com.gskinner.counterwidget';
   final String counterId = 'counter';
   final String bgColorId = 'bgColor';
 
   // Used in the `HomeWidget.renderFlutterWidget` method
   final String bgRenderKey = 'bgRender';
-  final String bgColorKey = 'bgColor';
 
   void init() {
+    // Set groupId so we can share data with the HomeWidget
     HomeWidget.setAppGroupId(groupId);
   }
 
-  Future<void> setBgColor(Color value) async {
-    debugPrint('Update HomeWidget bgColor = $value');
-    HomeWidget.saveWidgetData<Color>(bgColorKey, value);
+  Future<void> setColor(Color value) async {
+    // Save value to UserDefaults as a comma separated string of 0-1 values
+    final colorString = [value.red / 255, value.green / 255, value.blue / 255].join(',');
+    await HomeWidget.saveWidgetData<String>('themeColor', colorString);
+    // Inform the widget we have changed something
     HomeWidget.updateWidget(iOSName: widgetKind);
   }
 
+  // Updates the shared count value and renders a new background
   Future<void> setCount({required int count}) async {
     debugPrint('Update HomeWidget count = $count');
     // Save current _counter value to UserDefaults
@@ -38,7 +43,7 @@ class CounterHomeWidgetController {
       key: bgRenderKey,
     );
 
-    // Inform the widget we have updated something
+    // Inform the widget we have changed something
     HomeWidget.updateWidget(iOSName: widgetKind);
   }
 }

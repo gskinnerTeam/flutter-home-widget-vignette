@@ -57,39 +57,61 @@ class _MyHomePageState extends State<MyHomePage> {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
       _counter = _prefs?.getInt(_countPrefsKey) ?? _counter;
+      _handleCounterChanged();
     });
   }
 
   void _incrementCounter() {
     setState(() {
       _counter++;
-      if (_counter > 9) _counter = _defaultCounterValue;
     });
-    // Save current count to userPrefs
+    _handleCounterChanged();
+  }
+
+  void _resetCount() {
+    setState(() {
+      _counter = _defaultCounterValue;
+    });
+    _handleCounterChanged();
+  }
+
+  // Save current count to userPrefs and update the HomeWidget
+  void _handleCounterChanged() {
     _prefs?.setInt(_countPrefsKey, _counter);
-    // Update home widget
     _homeWidgetController.setCount(count: _counter);
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Pass current themeColor for the HomeWidget
+    _homeWidgetController.setColor(Theme.of(context).primaryColor);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final bgColor = Theme.of(context).primaryColor;
-    _homeWidgetController.setBgColor(bgColor);
     return Scaffold(
       body: Stack(
         children: [
-          HomeWidgetBgImage(count: _counter),
+          // Background, wrapped in AnimatedSwitcher for a nice effect
+          HomeWidgetBgImage(
+            count: _counter,
+            size: const Size(400, 400),
+            color: Theme.of(context).primaryColor,
+          ),
+
+          // Reset btn
+          _buildResetBtnForStack(),
+
           // Counter widget
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text(
-                  'You have pushed the button this many times:',
-                ),
                 Text(
                   '$_counter',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: TextStyle(fontSize: 48, fontFamily: 'RubikGlitch', color: Theme.of(context).primaryColor),
                 ),
               ],
             ),
@@ -101,6 +123,21 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget _buildResetBtnForStack() {
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: TextButton(
+            onPressed: _resetCount,
+            child: const Text('RESET COUNT'),
+          ),
+        ),
+      ),
     );
   }
 }
