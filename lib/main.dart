@@ -95,10 +95,14 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         children: [
           // Background, wrapped in AnimatedSwitcher for a nice effect
-          HomeWidgetBgImage(
-            count: _counter,
-            size: const Size(400, 400),
-            color: Theme.of(context).primaryColor,
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 500),
+            child: HomeWidgetBgImage(
+              key: ValueKey(_counter),
+              count: _counter,
+              size: const Size(400, 400),
+              color: Theme.of(context).primaryColor,
+            ),
           ),
 
           // Reset btn

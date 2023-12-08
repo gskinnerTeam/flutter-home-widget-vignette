@@ -11,6 +11,7 @@ class CounterHomeWidgetController {
   // UserDefaults keys, must match values declared in swiftUi
   final String groupId = 'group.com.gskinner.counterwidget';
   final String counterId = 'counter';
+  final String themeColorId = 'themeColor';
   final String bgColorId = 'bgColor';
 
   // Used in the `HomeWidget.renderFlutterWidget` method
@@ -24,7 +25,7 @@ class CounterHomeWidgetController {
   Future<void> setColor(Color value) async {
     // Save value to UserDefaults as a comma separated string of 0-1 values
     final colorString = [value.red / 255, value.green / 255, value.blue / 255].join(',');
-    await HomeWidget.saveWidgetData<String>('themeColor', colorString);
+    await HomeWidget.saveWidgetData<String>(themeColorId, colorString);
     // Inform the widget we have changed something
     HomeWidget.updateWidget(iOSName: widgetKind);
   }
