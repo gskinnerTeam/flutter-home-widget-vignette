@@ -2,31 +2,33 @@ import Foundation
 import SwiftUI
 import WidgetKit
 
+
+// Flutter assets
+let defaultBgAssetUrl = getflutterAssetUrl("/assets/images/default-bg.png");
+let fontAssetUrl = getflutterAssetUrl("/assets/fonts/RubikGlitch-Regular.ttf")
+
+let fontName = "Rubik Glitch"
+
 // Defines the view / layout of the widget
 struct CounterWidgetView : View {
     var entry: Provider.Entry
     
-    // Use some funky syntax to get the current widgetFamily
+    // Get the current widgetFamily, so we can tweak the view layout if we're small, medium or large
     @Environment(\.widgetFamily) var family: WidgetFamily
     
     // Implement init() so we can register a font included in Flutter Asset Bundle
     init(entry: Provider.Entry) {
         self.entry = entry
-        CTFontManagerRegisterFontsForURL(flutterAssetBundle.appending(
-            path: fontPath) as CFURL, CTFontManagerScope.process, nil)
+        CTFontManagerRegisterFontsForURL(fontAssetUrl as CFURL, CTFontManagerScope.process, nil)
     }
     
     var body: some View {
         // If we don't have a background image path, assume the app has not been launched yet
-        let hasAppRunOnce = entry.bgImgPath != nil;
-        
+        let hasAppRunOnce = entry.bgImgUrl != nil;
         // Get the path of the rendered image, or fallback to a default image
-        let imgPath = entry.bgImgPath ??
-        flutterAssetBundle.appending(path: defaultBgImagePath).path();
+        let imgPath = entry.bgImgUrl ?? defaultBgAssetUrl.path();
         
-        // Use the themeColor from the flutter app or a default grey
         let bgColor = entry.themeColor ?? Color(red: 0.2, green: 0.2, blue: 0.2);
-        
         if let uiImage = UIImage(contentsOfFile: imgPath) {
             return AnyView(
                 ZStack{
@@ -75,13 +77,12 @@ extension View {
 }
 
 // Utility method for loading flutter assets from the assetBundle
-var flutterAssetBundle: URL {
-    let bundle = Bundle.main
-    if bundle.bundleURL.pathExtension == "appex" {
+func getflutterAssetUrl(_ path: String) -> URL {
+    let url = Bundle.main.bundleURL
+    if url.pathExtension == "appex" {
         // Peel off two directory levels - MY_APP.app/PlugIns/MY_APP_EXTENSION.appex
-        var url = bundle.bundleURL.deletingLastPathComponent().deletingLastPathComponent()
+        var url = url.deletingLastPathComponent().deletingLastPathComponent()
         url.append(component: "Frameworks/App.framework/flutter_assets")
-        return url
     }
-    return bundle.bundleURL
+    return url.appending(path: path)
 }

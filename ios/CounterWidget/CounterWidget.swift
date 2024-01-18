@@ -18,11 +18,6 @@ let counterId = "counter";
 let themeColorId = "themeColor";
 let bgRenderKey = "bgRender";
 
-// Flutter assets
-let defaultBgImagePath = "/assets/images/default-bg.png";
-let fontPath = "/assets/fonts/RubikGlitch-Regular.ttf"
-let fontName = "Rubik Glitch"
-
 // A `TimelineProvider` advises iOS when it should next update the widget
 // and returns an `Entry` for the widget in different contexts.
 // UserDefaults info is loaded inside the getSnapshot method.
@@ -53,7 +48,7 @@ struct Provider: TimelineProvider {
                 date: Date(),
                 count: count,
                 themeColor: themeColor,
-                bgImgPath: bgImgPath
+                bgImgUrl: bgImgPath
             )
         )
     }
@@ -74,7 +69,7 @@ struct CounterEntry : TimelineEntry {
     let date: Date
     let count: Int
     var themeColor: Color? = nil
-    var bgImgPath: String? = nil
+    var bgImgUrl: String? = nil
 }
 
 // Widget defines the widget configuration and which View will render the entry
