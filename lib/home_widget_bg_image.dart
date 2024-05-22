@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-/// Renders an illustration that will be converted into a background-image
+/// Builds an illustration that will be converted into a background-image
 /// for the Home Widget. This is never actually shown on-screen in this app.
 class HomeWidgetBgImage extends StatelessWidget {
   const HomeWidgetBgImage({super.key, required this.count, this.size, this.color});
