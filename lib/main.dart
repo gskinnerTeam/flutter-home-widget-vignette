@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_home_widget_vignette/home_widget_bg_image.dart';
 import 'package:flutter_home_widget_vignette/home_widget_controller.dart';
@@ -34,59 +35,51 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // Start the counter at a >1 value for nicer bg visualizations
   static const _defaultCounterValue = 3;
   static const _countPrefsKey = 'count';
 
-  // Start the counter at a >1 value for nicer bg visualizations
-  int _counter = _defaultCounterValue;
-
-  final _homeWidgetController = CounterHomeWidgetController();
-
-  // Use prefs to persist the current count between app launches
+  // Use SharedPreferences to persist the current count between app launches so it stays in sync with the last rendered background
   SharedPreferences? _prefs;
+  final _counter = ValueNotifier(_defaultCounterValue);
+  final _homeWidgetController = CounterHomeWidgetController();
 
   @override
   void initState() {
-    _initPrefs();
     _homeWidgetController.init();
+    // Get userPrefs, start counter at last saved value (if any)
+    SharedPreferences.getInstance().then((prefs) {
+      _prefs = prefs;
+      _counter.value = _prefs?.getInt(_countPrefsKey) ?? _counter.value;
+    });
+    // Listen for changes on counter,
+    _counter.addListener(() {
+      _prefs?.setInt(_countPrefsKey, _counter.value); // Save current count to UserPrefs
+      // Update the HomeWidget with the new count, rendering a new background image
+      _homeWidgetController.setCountAndRender(count: _counter.value);
+      setState(() {}); // Rebuild
+    });
     super.initState();
   }
 
-  // Get UserPrefs instance and load initial value for _counter
-  void _initPrefs() async {
-    _prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _counter = _prefs?.getInt(_countPrefsKey) ?? _counter;
-      _handleCounterChanged();
-    });
+  @override
+  void dispose() {
+    _counter.dispose();
+    super.dispose();
   }
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-    _handleCounterChanged();
-  }
+  void _incrementCounter() => _counter.value = _counter.value + 1;
 
-  void _resetCount() {
-    setState(() {
-      _counter = _defaultCounterValue;
-    });
-    _handleCounterChanged();
-  }
-
-  // Save current count to userPrefs and update the HomeWidget
-  void _handleCounterChanged() {
-    _prefs?.setInt(_countPrefsKey, _counter);
-    _homeWidgetController.setCount(count: _counter);
-  }
+  void _resetCount() => _counter.value = _defaultCounterValue;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     // Pass current themeColor for the HomeWidget
-    _homeWidgetController.setColor(Theme.of(context).primaryColor);
+    _homeWidgetController.setColor(Theme
+        .of(context)
+        .primaryColor);
   }
 
   @override
@@ -99,9 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
             duration: const Duration(milliseconds: 500),
             child: HomeWidgetBgImage(
               key: ValueKey(_counter),
-              count: _counter,
+              count: _counter.value,
               size: const Size(400, 400),
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
             ),
           ),
 
@@ -115,7 +110,13 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Text(
                   '$_counter',
-                  style: TextStyle(fontSize: 48, fontFamily: 'RubikGlitch', color: Theme.of(context).primaryColor),
+                  style: TextStyle(
+                    fontSize: 48,
+                    fontFamily: 'RubikGlitch',
+                    color: Theme
+                        .of(context)
+                        .primaryColor,
+                  ),
                 ),
               ],
             ),
@@ -126,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 

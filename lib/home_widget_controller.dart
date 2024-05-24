@@ -31,7 +31,7 @@ class CounterHomeWidgetController {
   }
 
   // Updates the shared count value and renders a new background
-  Future<void> setCount({required int count}) async {
+  Future<void> setCountAndRender({required int count}) async {
     debugPrint('Update HomeWidget count = $count');
     // Save current _counter value to UserDefaults
     await HomeWidget.saveWidgetData<int>(counterId, count);

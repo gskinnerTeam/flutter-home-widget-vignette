@@ -2,11 +2,9 @@ import Foundation
 import SwiftUI
 import WidgetKit
 
-
 // Flutter assets
 let defaultBgAssetUrl = getflutterAssetUrl("/assets/images/default-bg.png");
 let fontAssetUrl = getflutterAssetUrl("/assets/fonts/RubikGlitch-Regular.ttf")
-
 let fontName = "Rubik Glitch"
 
 // Defines the view / layout of the widget
@@ -23,8 +21,6 @@ struct CounterWidgetView : View {
     }
     
     var body: some View {
-        // If we don't have a background image path, assume the app has not been launched yet
-        let hasAppRunOnce = entry.bgImgUrl != nil;
         // Get the path of the rendered image, or fallback to a default image
         let imgPath = entry.bgImgUrl ?? defaultBgAssetUrl.path();
         
@@ -38,9 +34,8 @@ struct CounterWidgetView : View {
                         .aspectRatio(contentMode: .fill)
                         .edgesIgnoringSafeArea(.all)
                     
-                    // If the app has never been launched we won't have a rendered background image.
-                    // Instead of the count, show a warning message
-                    if(hasAppRunOnce == false){
+                    // If we won't have a rendered background image show a warning instead of the count
+                    if(entry.bgImgUrl == nil){
                         Text("Launch the App to update this Widget!")
                             .foregroundStyle(.white)
                             .multilineTextAlignment(.center)
@@ -51,16 +46,28 @@ struct CounterWidgetView : View {
                     else {
                         Text("\(entry.count)")
                             .foregroundStyle(.white)
-                        // Use the custom font from Flutter
+                             // Use the custom font from Flutter
                             .font(Font.custom(fontName, size: family == .systemSmall ? 48 : 72));
                     }
                 }.widgetBackground(bgColor)
             )
         }
-        return AnyView(Text("Something went wrong..."))
+        return AnyView(Text("Unable to create a UIImage from the imgPath"))
         
     }
 }
+
+// Utility method for loading flutter assets from the assetBundle
+func getflutterAssetUrl(_ path: String) -> URL {
+    let url = Bundle.main.bundleURL
+    if url.pathExtension == "appex" {
+        // Peel off two directory levels - MY_APP.app/PlugIns/MY_APP_EXTENSION.appex
+        var url = url.deletingLastPathComponent().deletingLastPathComponent()
+        url.append(component: "Frameworks/App.framework/flutter_assets")
+    }
+    return url.appending(path: path)
+}
+
 
 // Workaround for new APIs added in iOS17 that required `containerBackground` to be set.
 extension View {
@@ -74,15 +81,4 @@ extension View {
             return background(backgroundView)
         }
     }
-}
-
-// Utility method for loading flutter assets from the assetBundle
-func getflutterAssetUrl(_ path: String) -> URL {
-    let url = Bundle.main.bundleURL
-    if url.pathExtension == "appex" {
-        // Peel off two directory levels - MY_APP.app/PlugIns/MY_APP_EXTENSION.appex
-        var url = url.deletingLastPathComponent().deletingLastPathComponent()
-        url.append(component: "Frameworks/App.framework/flutter_assets")
-    }
-    return url.appending(path: path)
 }
