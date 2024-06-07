@@ -29,7 +29,7 @@ struct CounterEntry : TimelineEntry {
 
 // Widget defines the widget configuration and which View will render the entry
 // This is where we create the [CounterWidgetView] which does most of the lifting in this example.
-struct CounterWidget: Widget {
+struct CounterWidgetConfiguration: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: widgetKind, provider: Provider()) { entry in
             CounterWidgetView(entry: entry)
@@ -62,9 +62,9 @@ struct Provider: TimelineProvider {
         let count = userDefaults?.integer(forKey: counterId) ?? 3
         let bgImgPath = userDefaults?.string(forKey: bgRenderKey)
         
-        // The themeColor is saved as a comma-separated list of numbers
+        // The themeColor is saved as a comma-separated list of Doubles
         // Split colorsString into a list of Doubles, if all goes well create a Color
-        var themeColor:Color?;
+        var themeColor:Color?
         let colorString = userDefaults?.string(forKey: themeColorId)
         let colors = colorString?.components(separatedBy: ",").compactMap {Double($0)}
         if(colors != nil && colors?.count == 3){

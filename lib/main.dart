@@ -77,9 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.didChangeDependencies();
 
     // Pass current themeColor for the HomeWidget
-    _homeWidgetController.setColor(Theme
-        .of(context)
-        .primaryColor);
+    _homeWidgetController.setColor(Theme.of(context).primaryColor);
   }
 
   @override
@@ -94,9 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
               key: ValueKey(_counter),
               count: _counter.value,
               size: const Size(400, 400),
-              color: Theme
-                  .of(context)
-                  .primaryColor,
+              color: Theme.of(context).primaryColor,
             ),
           ),
 
@@ -109,13 +105,11 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  '$_counter',
+                  '${_counter.value}',
                   style: TextStyle(
                     fontSize: 48,
                     fontFamily: 'RubikGlitch',
-                    color: Theme
-                        .of(context)
-                        .primaryColor,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
               ],

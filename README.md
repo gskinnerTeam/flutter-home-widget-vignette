@@ -9,3 +9,8 @@ Flutter Widget off-screen which serves as the background image for the Home Widg
 
 For detailed instructions on how to add a Home Screen Widget to your app see the Flutter code lab:
 https://codelabs.developers.google.com/flutter-home-screen-widgets#0
+
+For more info the code inside of this repo as well as the structure of Home Widgets themselves,
+please see our related blog
+post: https://blog.gskinner.com/archives/2024/06/flutter-ios-home-widgets-deep-dive.html(opens in a
+new tab)
