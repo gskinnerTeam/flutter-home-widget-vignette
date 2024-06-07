@@ -3,8 +3,8 @@ import SwiftUI
 import WidgetKit
 
 // Flutter assets
-let defaultBgAssetUrl = getflutterAssetUrl("/assets/images/default-bg.png");
-let fontAssetUrl = getflutterAssetUrl("/assets/fonts/RubikGlitch-Regular.ttf")
+let defaultBgAssetUrl = getflutterAssetUrl("assets/images/default-bg.png");
+let fontAssetUrl = getflutterAssetUrl("assets/fonts/RubikGlitch-Regular.ttf")
 let fontName = "Rubik Glitch"
 
 // Defines the view / layout of the widget
@@ -17,14 +17,14 @@ struct CounterWidgetView : View {
     // Implement init() so we can register a font included in Flutter Asset Bundle
     init(entry: Provider.Entry) {
         self.entry = entry
+        // Register custom font
         CTFontManagerRegisterFontsForURL(fontAssetUrl as CFURL, CTFontManagerScope.process, nil)
     }
     
     var body: some View {
         // Get the path of the rendered image, or fallback to a default image
-        let imgPath = entry.bgImgUrl ?? defaultBgAssetUrl.path();
-        
-        let bgColor = entry.themeColor ?? Color(red: 0.2, green: 0.2, blue: 0.2);
+        let imgPath = entry.bgImgUrl ?? defaultBgAssetUrl.path()
+        let bgColor = entry.themeColor ?? Color(red: 0.2, green: 0.2, blue: 0.2)
         if let uiImage = UIImage(contentsOfFile: imgPath) {
             return AnyView(
                 ZStack{
@@ -59,15 +59,14 @@ struct CounterWidgetView : View {
 
 // Utility method for loading flutter assets from the assetBundle
 func getflutterAssetUrl(_ path: String) -> URL {
-    let url = Bundle.main.bundleURL
+    var url = Bundle.main.bundleURL
     if url.pathExtension == "appex" {
         // Peel off two directory levels - MY_APP.app/PlugIns/MY_APP_EXTENSION.appex
-        var url = url.deletingLastPathComponent().deletingLastPathComponent()
+        url = url.deletingLastPathComponent().deletingLastPathComponent()
         url.append(component: "Frameworks/App.framework/flutter_assets")
     }
     return url.appending(path: path)
 }
-
 
 // Workaround for new APIs added in iOS17 that required `containerBackground` to be set.
 extension View {
